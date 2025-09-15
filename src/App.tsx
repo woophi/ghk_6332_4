@@ -17,7 +17,7 @@ export const App = () => {
   const { stocks, bots } = useStocksData();
 
   const selectedStock = stocks.find(s => s.ticker === selectedStockTicker);
-  const selectedBot = bots.find(b => b.variant === 1);
+  const selectedBot = bots.find(b => b.variant === 4);
 
   useEffect(() => {
     if (!LS.getItem(LSKeys.UserId, null)) {
