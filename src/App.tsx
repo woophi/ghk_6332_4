@@ -40,12 +40,13 @@ export const App = () => {
           Акции
         </Typography.Text>
         <Typography.TitleMobile tag="h1" view="medium" font="system" weight="bold">
-          Начинающий банкир
+          Фавориты на 3 квартал
         </Typography.TitleMobile>
       </div>
       <div className={appSt.container}>
         <Typography.Text view="primary-medium">
-          Коллекция бумаг известных банков России. Не работая в банке, можно быть его владельцем, хоть и частично
+          Аналитики Альфа-Инвестиций подготовили стратегию на 3 квартал 2025 года. Рассказываем, чего ожидать инвесторам и на
+          какие бумаги обратить внимание.
         </Typography.Text>
         <Typography.TitleMobile tag="h2" view="small" font="system" weight="bold" style={{ marginTop: '1rem' }}>
           Состав подборки
@@ -56,7 +57,7 @@ export const App = () => {
             key={stock.ticker}
             stockItem={stock}
             onClick={s => {
-              window.gtag('event', '6332_buy_active', {
+              window.gtag('event', '6332_card_active', {
                 var: 'var4',
                 ticker: s.ticker,
               });

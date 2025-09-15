@@ -72,6 +72,12 @@ const botContainer = style({
   gap: '1rem',
 });
 
+const rowLevel = style({
+  backgroundColor: '#F8F8F8',
+  padding: '12px',
+  borderRadius: '1rem',
+});
+
 export const bsSt = {
   bottomBtn,
   container,
@@ -83,4 +89,5 @@ export const bsSt = {
   row,
   btmContent,
   botContainer,
+  rowLevel,
 };

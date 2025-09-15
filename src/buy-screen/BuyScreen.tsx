@@ -4,6 +4,8 @@ import { ButtonMobile } from '@alfalab/core-components/button/mobile';
 import { Gap } from '@alfalab/core-components/gap';
 import { SuperEllipse } from '@alfalab/core-components/icon-view/super-ellipse';
 import { NumberInput } from '@alfalab/core-components/number-input';
+import { PureCell } from '@alfalab/core-components/pure-cell';
+import { Radio } from '@alfalab/core-components/radio';
 import { Typography } from '@alfalab/core-components/typography';
 import { ArrowRightMIcon } from '@alfalab/icons-glyph/ArrowRightMIcon';
 import { InformationCircleLineSIcon } from '@alfalab/icons-glyph/InformationCircleLineSIcon';
@@ -27,6 +29,8 @@ export const BuyScreen = ({ stockItem, bot, setThx }: Props) => {
   const [showBs, setShowBs] = useState(false);
   const [loading, setLoading] = useState(false);
   const [botConnected, setBotConnected] = useState(false);
+  const [showLevels, setShowLevels] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useState('');
 
   const submit = () => {
     if (lots === 0) {
@@ -35,7 +39,9 @@ export const BuyScreen = ({ stockItem, bot, setThx }: Props) => {
     setLoading(true);
     sendDataToGA({
       sum: stockItem.price_today * lots * stockItem.lot,
-      active: stockItem.ticker,
+      ticker: stockItem.ticker,
+      bot: botConnected ? bot.name : 'none',
+      risk: botConnected && selectedLevel ? bot.riskLevels[Number(selectedLevel)].level : 'none',
     }).then(() => {
       LS.setItem(LSKeys.ShowThx, true);
       setThx(true);
@@ -123,7 +129,18 @@ export const BuyScreen = ({ stockItem, bot, setThx }: Props) => {
             </Typography.Text>
           </div>
 
-          <ButtonMobile view="secondary" size={32} onClick={() => setBotConnected(!botConnected)}>
+          <ButtonMobile
+            view="secondary"
+            size={32}
+            onClick={() => {
+              if (botConnected) {
+                setBotConnected(false);
+              } else {
+                window.gtag('event', '6332_bot_activate', { ticker: stockItem.ticker, var: 'var4', bot: bot.name });
+                setShowLevels(true);
+              }
+            }}
+          >
             {botConnected ? 'Отключить' : 'Подключить'}
           </ButtonMobile>
         </div>
@@ -159,6 +176,56 @@ export const BuyScreen = ({ stockItem, bot, setThx }: Props) => {
           </ButtonMobile>
         </div>
       </div>
+
+      <BottomSheet
+        open={showLevels}
+        onClose={() => {
+          setShowLevels(false);
+        }}
+        contentClassName={bsSt.btmContent}
+        title={
+          <Typography.Text view="primary-large" tag="p" defaultMargins={false} weight="medium">
+            Выберите уровень риска для подключения робота
+          </Typography.Text>
+        }
+        hasCloser
+        stickyHeader
+        actionButton={
+          <ButtonMobile
+            view="primary"
+            size={56}
+            block
+            onClick={() => {
+              if (selectedLevel) {
+                setBotConnected(true);
+              }
+              setShowLevels(false);
+            }}
+          >
+            Выбрать и подключить
+          </ButtonMobile>
+        }
+      >
+        <div className={bsSt.container}>
+          {bot.riskLevels.map((levelData, index) => (
+            <PureCell className={bsSt.rowLevel} key={levelData.level} onClick={() => setSelectedLevel(String(index))}>
+              <PureCell.Content>
+                <PureCell.Main>
+                  <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                    {levelData.level}
+                  </Typography.Text>
+                  <Typography.Text view="secondary-small" tag="p" defaultMargins={false} color="secondary">
+                    {levelData.profit}
+                  </Typography.Text>
+                </PureCell.Main>
+              </PureCell.Content>
+              <PureCell.Addon verticalAlign="center">
+                <Radio checked={selectedLevel === String(index)} onChange={() => setSelectedLevel(String(index))} />
+              </PureCell.Addon>
+            </PureCell>
+          ))}
+        </div>
+      </BottomSheet>
 
       <BottomSheet
         open={showBs}
