@@ -287,7 +287,7 @@ export const BuyScreen = ({ stockItem, bot, setThx }: Props) => {
           setShowBotInfo(false);
         }}
         contentClassName={bsSt.btmContent}
-        title={`Как работает стратегия торгового робота «${bot.name}»`}
+        title={`Робот ${bot.name}`}
         hasCloser
         stickyHeader
         actionButton={
